@@ -137,9 +137,9 @@ class _NavigatorWebViewState extends State<NavigatorWebView> {
                                 backgroundImage:
                                     const AssetImage(AppAssets.perfil),
                               ),
-                              gapW(currentDiagonal * .01),
+                              //gapW(currentDiagonal * .01),
                               CustomLabel(
-                                text: 'P E R F I L',
+                                text: '',
                                 fontSize: currentDiagonal * .012,
                               ),
                             ],

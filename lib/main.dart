@@ -22,7 +22,7 @@ class MyApp extends ConsumerWidget {
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      title: 'Adoptame',
+      title: 'Adoptame perro',
       theme: isDarkMode ? AppTheme.darkMode : AppTheme.lightMode,
       routerConfig: appRoute,
     );

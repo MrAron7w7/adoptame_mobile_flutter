@@ -73,6 +73,11 @@ class _ProfileViewState extends ConsumerState<ProfileWebView> {
             ),
           ),
 
+          VerticalDivider(
+            thickness: 1,
+            color: Theme.of(context).colorScheme.secondary.withOpacity(.4),
+          ),
+
           // Editar perfil y mostrar datos
           Expanded(
             child: CustomPadding(

@@ -5,4 +5,5 @@ class AppAssets {
   static const all = 'assets/image/all.png';
   static const dog = 'assets/image/dog.png';
   static const cat = 'assets/image/cat.png';
+  static const patita = 'assets/image/patita.png';
 }

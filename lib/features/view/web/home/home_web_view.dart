@@ -319,6 +319,7 @@ class _HomeWebViewState extends State<HomeWebView> {
                       'Explore nuestros animales disponibles y obtenga más información sobre el proceso de adopción. ',
                   style: GoogleFonts.inter(
                     fontSize: currentDiagonal * .012,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
                 TextSpan(
@@ -335,6 +336,7 @@ class _HomeWebViewState extends State<HomeWebView> {
                       'Gracias por apoyar nuestra misión de llevar alegría a las familias a través de la adopción de mascotas.',
                   style: GoogleFonts.inter(
                     fontSize: currentDiagonal * .012,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
               ],

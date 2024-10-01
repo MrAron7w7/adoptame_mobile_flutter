@@ -43,72 +43,81 @@ class LoginWebView extends StatelessWidget {
                           right: BorderSide(width: .5),
                         ),
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // Titulo del login
-                          const CustomLabel(
-                            textAlign: TextAlign.center,
-                            fontSize: 40,
-                            text: 'Iniciar Sesion',
-                            fontWeight: FontWeight.bold,
-                          ),
-
-                          gapH(30),
-
-                          // Los texto de los inputs
-                          CustomTextFieldForm(
-                            fontSize: currentDiagonal * .012,
-                            prefixIcon: IconlyBold.message,
-                            hintText: 'Example@example.com',
-                            label: 'Email',
-                          ),
-
-                          gapH(20),
-
-                          CustomTextFieldForm(
-                            fontSize: currentDiagonal * .012,
-                            prefixIcon: IconlyBold.lock,
-                            suffixIcon: const Icon(IconlyBold.show),
-                            hintText: 'Password',
-                            label: 'Contraseña',
-                          ),
-
-                          gapH(30),
-
-                          // Botton de login
-                          CustomButton(
-                            fontSize: currentDiagonal * .013,
-                            sizeHeight: currentDiagonal * .05,
-                            text: 'Iniciar Sesion',
-                            onPressed: () =>
-                                context.go('/${NavigatorWebView.name}'),
-                          ),
-
-                          gapH(30),
-                          // Botton de regisrarse
-
-                          FittedBox(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Titulo del login
+                            Stack(
+                              alignment: Alignment.center,
+                              clipBehavior: Clip.none,
                               children: [
-                                CustomLabel(
-                                  text: '¿No tienes cuenta? ',
-                                  fontSize: currentDiagonal * .012,
+                                const CustomLabel(
+                                  textAlign: TextAlign.center,
+                                  fontSize: 40,
+                                  text: 'Iniciar Sesion',
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                TextButton(
-                                  onPressed: () =>
-                                      context.push('/${RegisterWebView.name}'),
-                                  child: CustomLabel(
-                                    text: 'Registrate',
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: currentDiagonal * .012,
-                                  ),
-                                ),
+                                Image.asset(AppAssets.patita)
                               ],
                             ),
-                          ),
-                        ],
+
+                            gapH(30),
+
+                            // Los texto de los inputs
+                            CustomTextFieldForm(
+                              fontSize: currentDiagonal * .012,
+                              prefixIcon: IconlyBold.message,
+                              hintText: 'Example@example.com',
+                              label: 'Email',
+                            ),
+
+                            gapH(20),
+
+                            CustomTextFieldForm(
+                              fontSize: currentDiagonal * .012,
+                              prefixIcon: IconlyBold.lock,
+                              suffixIcon: const Icon(IconlyBold.show),
+                              hintText: 'Password',
+                              label: 'Contraseña',
+                            ),
+
+                            gapH(30),
+
+                            // Botton de login
+                            CustomButton(
+                              fontSize: currentDiagonal * .013,
+                              sizeHeight: currentDiagonal * .05,
+                              text: 'Iniciar Sesion',
+                              onPressed: () =>
+                                  context.go('/${NavigatorWebView.name}'),
+                            ),
+
+                            gapH(30),
+                            // Botton de regisrarse
+
+                            FittedBox(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CustomLabel(
+                                    text: '¿No tienes cuenta? ',
+                                    fontSize: currentDiagonal * .012,
+                                  ),
+                                  TextButton(
+                                    onPressed: () => context
+                                        .push('/${RegisterWebView.name}'),
+                                    child: CustomLabel(
+                                      text: 'Registrate',
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: currentDiagonal * .012,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

@@ -92,4 +92,6 @@ class CameraGallery extends _$CameraGallery {
       ),
     );
   }
+
+  // Obtener imagen en version web
 }
