@@ -1,8 +1,10 @@
 import 'package:adoptme/core/constants/app_assets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconly/iconly.dart';
 
+import '../../../firebase/user_auth/firebase_auth_services.dart';
 import '/features/view/views.dart';
 import '/shared/components/components.dart';
 
@@ -18,13 +20,31 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
 
+  final FirebaseAuthServices _auth = FirebaseAuthServices();
+
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+//limpiar recursos cuando no se ocupe
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth < 600) {
           return GestureDetector(
-            onTap: () => FocusScope.of(context).unfocus(),
+            onTap: () {
+              /*FirebaseAuth.instance.signOut();*/
+              FocusScope.of(context).unfocus();
+            },
             child: Scaffold(
               //appBar: AppBar(),
               body: CustomPadding(
@@ -44,14 +64,15 @@ class _LoginViewState extends State<LoginView> {
                         const SizedBox(height: 30),
 
                         const CustomLabel(
-                          text: 'Iniciar Sesion',
+                          text: 'Iniciar SesionNNNNNNNNNNNNNNNNNNNNNNNNNN',
                           fontSize: 30,
                           fontWeight: FontWeight.w600,
                         ),
 
                         const SizedBox(height: 30),
 
-                        const CustomTextFieldForm(
+                          CustomTextFieldForm(
+                          controller: _emailController,
                           prefixIcon: IconlyBold.message,
                           keyboardType: TextInputType.emailAddress,
                           hintText: 'Example@gmail.com',
@@ -60,7 +81,8 @@ class _LoginViewState extends State<LoginView> {
 
                         const SizedBox(height: 40),
 
-                        const CustomTextFieldForm(
+                        CustomTextFieldForm(
+                          controller: _passwordController,
                           prefixIcon: IconlyBold.lock,
                           keyboardType: TextInputType.visiblePassword,
                           hintText: '********',
@@ -75,7 +97,7 @@ class _LoginViewState extends State<LoginView> {
                           text: 'Iniciar Sesion',
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
-                          onPressed: () => context.go('/${BottomNavbar.name}'),
+                          onPressed: () => _signIn(),
                           sizeHeight: 60,
                         ),
 
@@ -111,5 +133,20 @@ class _LoginViewState extends State<LoginView> {
         }
       },
     );
+  }
+  void _signIn() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    User? user = await _auth.signInWithEmailAndPassword(email, password);
+
+    if (user != null) {
+      print("User is successfully signed in");
+      context.go('/${BottomNavbar.name}');  // O simplemente '/login' si la ruta está definida así
+    } else {
+      print("Some error occurred");
+    }
+
+
   }
 }

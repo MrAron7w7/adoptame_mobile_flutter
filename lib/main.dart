@@ -10,12 +10,20 @@ import '/shared/theme/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase/firebase_options.dart';
 
+
+
+
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  // Inicializar Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await GetStorage.init();
   runApp(const ProviderScope(child: MyApp()));
 }
+
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
@@ -32,3 +40,7 @@ class MyApp extends ConsumerWidget {
     );
   }
 }
+
+
+
+

@@ -1,3 +1,6 @@
+import 'package:adoptme/firebase/user_auth/firebase_auth_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconly/iconly.dart';
@@ -16,6 +19,10 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
+
+  final FirebaseAuthServices _auth = FirebaseAuthServices();
+
+
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -30,7 +37,7 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext ) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -61,7 +68,8 @@ class _RegisterViewState extends State<RegisterView> {
 
                   const SizedBox(height: 30),
 
-                  const CustomTextFieldForm(
+                  CustomTextFieldForm(
+                    controller: _usernameController,
                     keyboardType: TextInputType.name,
                     prefixIcon: IconlyBold.profile,
                     hintText: 'Pepito',
@@ -70,7 +78,8 @@ class _RegisterViewState extends State<RegisterView> {
 
                   const SizedBox(height: 20),
 
-                  const CustomTextFieldForm(
+                  CustomTextFieldForm(
+                    controller: _emailController,
                     prefixIcon: IconlyBold.message,
                     keyboardType: TextInputType.emailAddress,
                     hintText: 'Example@gmail.com',
@@ -79,7 +88,8 @@ class _RegisterViewState extends State<RegisterView> {
 
                   const SizedBox(height: 20),
 
-                  const CustomTextFieldForm(
+                  CustomTextFieldForm(
+                    controller: _passwordController,
                     prefixIcon: IconlyBold.lock,
                     keyboardType: TextInputType.visiblePassword,
                     hintText: '********',
@@ -103,7 +113,7 @@ class _RegisterViewState extends State<RegisterView> {
                     text: 'Registrarse',
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
-                    onPressed: () {},
+                    onPressed: () {_signUp();},
                     sizeHeight: 60,
                   ),
 
@@ -134,4 +144,22 @@ class _RegisterViewState extends State<RegisterView> {
       ),
     );
   }
+
+  void _signUp() async {
+    String username = _usernameController.text;
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    User? user = await _auth.signUpWithEmailAndPassword(email, password);
+
+    if (user != null) {
+      print("User is successfully created");
+      context.go('/${LoginView.name}');  // O simplemente '/login' si la ruta está definida así
+    } else {
+      print("Failed to create user");
+    }
+
+
+  }
+
 }
