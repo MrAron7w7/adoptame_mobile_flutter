@@ -3,6 +3,7 @@ import 'package:adoptme/features/viewmodel/providers/theme_provider.dart';
 import 'package:adoptme/shared/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconly/iconly.dart';
 
 import '../../../core/utils/utils.dart';
@@ -16,6 +17,7 @@ class ProfileView extends ConsumerStatefulWidget {
 }
 
 class _ProfileViewState extends ConsumerState<ProfileView> {
+  bool _changeNotification = true;
   @override
   Widget build(BuildContext context) {
     final darkMode = ref.watch(themeProviderProvider);
@@ -71,14 +73,20 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
                   icon: IconlyBold.profile,
                   trailing: const Icon(IconlyLight.arrow_right_2, size: 16),
                   text: 'Configuracion',
-                  onTap: () {},
+                  onTap: _showDialogChangeName,
                 ),
 
                 CustomListTile(
                   text: 'Notificaciones',
-                  icon: Icons.notifications,
+                  icon: _changeNotification
+                      ? Icons.notifications
+                      : Icons.notifications_off,
                   trailing: const Icon(IconlyLight.arrow_right_2, size: 16),
-                  onTap: () {},
+                  onTap: () {
+                    setState(() {
+                      _changeNotification = !_changeNotification;
+                    });
+                  },
                 ),
 
                 CustomListTile(
@@ -111,6 +119,40 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  void _showDialogChangeName() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Cambiar el nombre
+            CustomLabel(
+              text: 'Cambiar nombre',
+              fontSize: 24,
+            ),
+
+            CustomTextFieldForm(
+              prefixIcon: IconlyBold.profile,
+              hintText: 'Juan',
+              label: '',
+            ),
+          ],
+        ),
+        actions: [
+          // Boton para guardar el cambio de nombre de usuario
+          TextButton(
+            onPressed: () {
+              context.pop();
+            },
+            child: const CustomLabel(text: 'Guardar'),
+          ),
+        ],
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:adoptme/shared/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconly/iconly.dart';
 
 import '../../../core/utils/utils.dart';
@@ -153,85 +154,154 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   // Card de cada item
   Widget _buildCard(int index) {
-    return Card(
-      color: Theme.of(context).colorScheme.surface,
-      elevation: 10,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-      ),
-      child: Column(
-        children: [
-          // Imagen
-          Expanded(
-            flex: 5,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10),
-                ),
-                image: DecorationImage(
-                  image:
-                      NetworkImage('https://picsum.photos/id/$index/200/300'),
-                  fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: _showDialogDetails,
+      child: Card(
+        color: Theme.of(context).colorScheme.surface,
+        elevation: 10,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        ),
+        child: Column(
+          children: [
+            // Imagen
+            Expanded(
+              flex: 5,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
+                  ),
+                  image: DecorationImage(
+                    image:
+                        NetworkImage('https://picsum.photos/id/$index/200/300'),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
-          ),
 
-          //  Descripcion
-          const Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomLabel(
-                    text: 'Macho',
-                    fontWeight: FontWeight.w500,
-                  ),
-                  CircleAvatar(
-                    radius: 10,
-                    child: Icon(FontAwesomeIcons.mars, size: 12),
-                  ),
-                ],
+            //  Descripcion
+            const Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomLabel(
+                      text: 'Perro - Macho',
+                      fontWeight: FontWeight.w500,
+                    ),
+                    CircleAvatar(
+                      radius: 10,
+                      child: Icon(FontAwesomeIcons.mars, size: 12),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
 
   SegmentedButton<int> _buildSegmentButton(BuildContext context) {
     return SegmentedButton(
-        showSelectedIcon: false,
-        style: SegmentedButton.styleFrom(
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          selectedForegroundColor:
-              _selectedValue == _selectedValue ? Colors.white : Colors.black,
-          selectedBackgroundColor: Theme.of(context).colorScheme.primary,
+      showSelectedIcon: false,
+      style: SegmentedButton.styleFrom(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        selectedForegroundColor:
+            _selectedValue == _selectedValue ? Colors.white : Colors.black,
+        selectedBackgroundColor: Theme.of(context).colorScheme.primary,
+      ),
+      selected: <int>{_selectedValue},
+      segments: const [
+        ButtonSegment<int>(
+          value: 1,
+          label: CustomLabel(text: 'Todos'),
+          icon: Icon(FontAwesomeIcons.plus),
         ),
-        selected: <int>{_selectedValue},
-        segments: const [
-          ButtonSegment<int>(
-            value: 1,
-            label: CustomLabel(text: 'Todos'),
-            icon: Icon(FontAwesomeIcons.plus),
-          ),
-          ButtonSegment<int>(
-            value: 2,
-            label: CustomLabel(text: 'Perritos'),
-            icon: Icon(FontAwesomeIcons.dog),
-          ),
-          ButtonSegment<int>(
-            value: 3,
-            label: CustomLabel(text: 'Gatitos'),
-            icon: Icon(FontAwesomeIcons.cat),
-          ),
-        ],
-        onSelectionChanged: (Set<int> selected) {
-          setState(() => _selectedValue = selected.first);
-        });
+        ButtonSegment<int>(
+          value: 2,
+          label: CustomLabel(text: 'Perritos'),
+          icon: Icon(FontAwesomeIcons.dog),
+        ),
+        ButtonSegment<int>(
+          value: 3,
+          label: CustomLabel(text: 'Gatitos'),
+          icon: Icon(FontAwesomeIcons.cat),
+        ),
+      ],
+      onSelectionChanged: (Set<int> selected) {
+        setState(() => _selectedValue = selected.first);
+      },
+    );
+  }
+
+  void _showDialogDetails() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CustomLabel(
+              text: 'Detalles',
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+            ),
+
+            gapH(25),
+
+            Container(
+              height: 200,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: const DecorationImage(
+                  image: AssetImage(AppAssets.dog),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+
+            gapH(25),
+
+            // Descripcion
+            Container(
+              color: Colors.red,
+              height: 100,
+              width: double.infinity,
+              child: const SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomLabel(
+                      text: 'Descripción',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    CustomLabel(
+                        text:
+                            'lorem ipsum lorem ipsum'), // Aqui va la descripcion de la mascota
+                  ],
+                ),
+              ),
+            ),
+
+            gapH(25),
+
+            // Adoptame
+            CustomButton(
+              onPressed: () => context.pop(),
+              text: 'Adoptame',
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

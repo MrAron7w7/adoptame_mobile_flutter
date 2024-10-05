@@ -60,94 +60,138 @@ class PhotoWebView extends ConsumerWidget {
                       height: size.height,
                       child: CustomPadding(
                         padding: 30,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Descripcion del animalito
-                            CustomLabel(
-                              text: 'Descripción del animal',
-                              fontSize: currentDiagonal * .013,
-                            ),
-                            const CustomTextFieldForm(
-                              prefixIcon: IconlyBold.message,
-                              hintText: 'Descripción',
-                              label: '',
-                              maxLines: 2,
-                            ),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Descripcion del animalito
+                              CustomLabel(
+                                text: 'Descripción del animal',
+                                fontSize: currentDiagonal * .013,
+                              ),
+                              const CustomTextFieldForm(
+                                prefixIcon: IconlyBold.message,
+                                hintText: '',
+                                label: '',
+                                maxLines: 2,
+                              ),
 
-                            gapH(currentDiagonal * .01),
+                              gapH(currentDiagonal * .01),
 
-                            // Genero
-                            CustomLabel(
-                              text: 'Genero del animal',
-                              fontSize: currentDiagonal * .013,
-                            ),
+                              // Tipo de animal
+                              CustomLabel(
+                                text: 'Tipo de animal',
+                                fontSize: currentDiagonal * .013,
+                              ),
 
-                            gapH(currentDiagonal * .01),
+                              gapH(currentDiagonal * .01),
 
-                            // Radios buttons
-                            Column(
-                              children: [
-                                RadioListTile<AnimalGender>(
-                                  title: CustomLabel(
-                                    text: 'Macho',
-                                    fontSize: currentDiagonal * .012,
-                                  ),
-                                  value: AnimalGender.macho,
-                                  groupValue: selectedGender,
-                                  onChanged: (AnimalGender? value) {
-                                    ref
-                                        .read(animalGnderProviderProvider
-                                            .notifier)
-                                        .setGender(animalGender: value!);
-                                  },
-                                ),
-                                RadioListTile<AnimalGender>(
-                                  title: CustomLabel(
-                                    text: 'Hembra',
-                                    fontSize: currentDiagonal * .012,
-                                  ),
-                                  value: AnimalGender.hembra,
-                                  groupValue: selectedGender,
-                                  onChanged: (AnimalGender? value) {
-                                    ref
-                                        .read(animalGnderProviderProvider
-                                            .notifier)
-                                        .setGender(animalGender: value!);
-                                  },
-                                ),
-                              ],
-                            ),
-
-                            gapH(currentDiagonal * .01),
-
-                            // Botones de subir imagen
-                            SizedBox(
-                              width: size.width,
-                              child: Wrap(
-                                alignment: WrapAlignment.spaceEvenly,
-                                //runAlignment: WrapAlignment.spaceEvenly,
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                runSpacing: 15,
+                              // Radios buttons
+                              Column(
                                 children: [
-                                  _buildButton(
-                                    context,
-                                    currentDiagonal,
-                                    onPressed: () => ref
-                                        .read(cameraGalleryProvider.notifier)
-                                        .selectPhoto(),
-                                    text: 'Subir imagen',
+                                  RadioListTile<AnimalGender>(
+                                    title: CustomLabel(
+                                      text: 'Perro',
+                                      fontSize: currentDiagonal * .012,
+                                    ),
+                                    value: AnimalGender.macho,
+                                    groupValue: selectedGender,
+                                    onChanged: (AnimalGender? value) {
+                                      ref
+                                          .read(animalGnderProviderProvider
+                                              .notifier)
+                                          .setGender(animalGender: value!);
+                                    },
                                   ),
-                                  _buildButton(
-                                    context,
-                                    currentDiagonal,
-                                    onPressed: () {},
-                                    text: 'Publicar',
+                                  RadioListTile<AnimalGender>(
+                                    title: CustomLabel(
+                                      text: 'Gato',
+                                      fontSize: currentDiagonal * .012,
+                                    ),
+                                    value: AnimalGender.hembra,
+                                    groupValue: selectedGender,
+                                    onChanged: (AnimalGender? value) {
+                                      ref
+                                          .read(animalGnderProviderProvider
+                                              .notifier)
+                                          .setGender(animalGender: value!);
+                                    },
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
+
+                              // Genero
+                              CustomLabel(
+                                text: 'Genero del animal',
+                                fontSize: currentDiagonal * .013,
+                              ),
+
+                              gapH(currentDiagonal * .01),
+
+                              // Radios buttons
+                              Column(
+                                children: [
+                                  RadioListTile<AnimalGender>(
+                                    title: CustomLabel(
+                                      text: 'Macho',
+                                      fontSize: currentDiagonal * .012,
+                                    ),
+                                    value: AnimalGender.macho,
+                                    groupValue: selectedGender,
+                                    onChanged: (AnimalGender? value) {
+                                      ref
+                                          .read(animalGnderProviderProvider
+                                              .notifier)
+                                          .setGender(animalGender: value!);
+                                    },
+                                  ),
+                                  RadioListTile<AnimalGender>(
+                                    title: CustomLabel(
+                                      text: 'Hembra',
+                                      fontSize: currentDiagonal * .012,
+                                    ),
+                                    value: AnimalGender.hembra,
+                                    groupValue: selectedGender,
+                                    onChanged: (AnimalGender? value) {
+                                      ref
+                                          .read(animalGnderProviderProvider
+                                              .notifier)
+                                          .setGender(animalGender: value!);
+                                    },
+                                  ),
+                                ],
+                              ),
+
+                              gapH(currentDiagonal * .01),
+
+                              // Botones de subir imagen
+                              SizedBox(
+                                width: size.width,
+                                child: Wrap(
+                                  alignment: WrapAlignment.spaceEvenly,
+                                  //runAlignment: WrapAlignment.spaceEvenly,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  runSpacing: 15,
+                                  children: [
+                                    _buildButton(
+                                      context,
+                                      currentDiagonal,
+                                      onPressed: () => ref
+                                          .read(cameraGalleryProvider.notifier)
+                                          .selectPhoto(),
+                                      text: 'Subir imagen',
+                                    ),
+                                    _buildButton(
+                                      context,
+                                      currentDiagonal,
+                                      onPressed: () {},
+                                      text: 'Publicar',
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

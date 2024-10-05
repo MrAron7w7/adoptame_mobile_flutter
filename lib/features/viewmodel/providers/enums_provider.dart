@@ -14,3 +14,15 @@ class AnimalGnderProvider extends _$AnimalGnderProvider {
     state = animalGender;
   }
 }
+
+@Riverpod(keepAlive: true)
+class TypeAnimal extends _$TypeAnimal {
+  @override
+  TypeAnimalSelected build() {
+    return TypeAnimalSelected.dog;
+  }
+
+  void setTypeAnimal({required TypeAnimalSelected typeAnimalSelected}) {
+    state = typeAnimalSelected;
+  }
+}

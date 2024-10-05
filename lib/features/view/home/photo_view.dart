@@ -20,7 +20,8 @@ class PhotoView extends ConsumerStatefulWidget {
 
 class _PhotoViewState extends ConsumerState<PhotoView> {
   final _descriptionController = TextEditingController();
-  int _selectedRadio = 1;
+  int _selectedGender = 1;
+  int _selectedAnimalType = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,9 @@ class _PhotoViewState extends ConsumerState<PhotoView> {
         _descriptionController.clear();
 
         // Restablecer el género a 'Macho'
-        _selectedRadio = 1;
+        _selectedAnimalType = 1;
+
+        _selectedGender = 1;
       });
     }
 
@@ -71,7 +74,7 @@ class _PhotoViewState extends ConsumerState<PhotoView> {
         appBar: AppBar(
           centerTitle: true,
           title: const CustomLabel(
-            text: 'Añadir una foto',
+            text: 'Agrega una foto',
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -101,6 +104,38 @@ class _PhotoViewState extends ConsumerState<PhotoView> {
 
                   gapH(size.height * .05),
 
+                  // Tipo del animal
+                  const Align(
+                    alignment: Alignment.bottomLeft,
+                    child: CustomLabel(
+                      text: 'Tipo del animalito',
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  gapH(size.height * .02),
+
+                  buildRadioListTile(
+                    title: 'Perro',
+                    value: 1,
+                    onChanged: (int? value) {
+                      setState(() => _selectedAnimalType = value!);
+                    },
+                    groupValue: _selectedAnimalType,
+                  ),
+
+                  buildRadioListTile(
+                    title: 'Gato',
+                    value: 2,
+                    groupValue: _selectedAnimalType,
+                    onChanged: (int? value) {
+                      setState(() => _selectedAnimalType = value!);
+                    },
+                  ),
+
+                  gapH(size.height * .02),
+
                   const Align(
                     alignment: Alignment.bottomLeft,
                     child: CustomLabel(
@@ -112,21 +147,21 @@ class _PhotoViewState extends ConsumerState<PhotoView> {
 
                   gapH(size.height * .02),
 
-                  RadioListTile(
-                    title: const CustomLabel(text: 'Macho'),
+                  buildRadioListTile(
+                    title: 'Macho',
                     value: 1,
-                    groupValue: _selectedRadio,
+                    groupValue: _selectedGender,
                     onChanged: (int? value) {
-                      setState(() => _selectedRadio = value!);
+                      setState(() => _selectedGender = value!);
                     },
                   ),
 
-                  RadioListTile(
-                    title: const CustomLabel(text: 'Hembra'),
+                  buildRadioListTile(
+                    title: 'Hembra',
                     value: 2,
-                    groupValue: _selectedRadio,
+                    groupValue: _selectedGender,
                     onChanged: (int? value) {
-                      setState(() => _selectedRadio = value!);
+                      setState(() => _selectedGender = value!);
                     },
                   ),
 
@@ -165,6 +200,21 @@ class _PhotoViewState extends ConsumerState<PhotoView> {
           ),
         ),
       ),
+    );
+  }
+
+  // Método para construir RadioListTile
+  Widget buildRadioListTile({
+    required String title,
+    required int value,
+    required int groupValue,
+    required Function(int?) onChanged,
+  }) {
+    return RadioListTile(
+      title: CustomLabel(text: title),
+      value: value,
+      groupValue: groupValue,
+      onChanged: onChanged,
     );
   }
 }
