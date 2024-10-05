@@ -64,7 +64,7 @@ class _LoginViewState extends State<LoginView> {
                         const SizedBox(height: 30),
 
                         const CustomLabel(
-                          text: 'Iniciar SesionNNNNNNNNNNNNNNNNNNNNNNNNNN',
+                          text: 'Iniciar Sesion',
                           fontSize: 30,
                           fontWeight: FontWeight.w600,
                         ),
