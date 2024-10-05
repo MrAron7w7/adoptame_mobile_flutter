@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "398290101750",
+    "project_id": "adoptame-db",
+    "storage_bucket": "adoptame-db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398290101750:android:2a0673a55ceecd5f3053d7",
+        "android_client_info": {
+          "package_name": "com.example.adoptme"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUu75QAiy7i7kDFOpEtAB-lDdRnRQD96Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -6,6 +6,10 @@ import '/core/constants/app_route_view.dart';
 import '/features/viewmodel/providers/theme_provider.dart';
 import '/shared/theme/app_theme.dart';
 
+//independencias de firebase
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase/firebase_options.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
