@@ -53,6 +53,7 @@ class CustomTextFieldForm extends StatelessWidget {
           fontWeight: fontWeight,
         ),
         TextFormField(
+          style: styleText,
           keyboardType: keyboardType,
           obscureText: obscureText ?? false,
           controller: controller,
@@ -77,6 +78,8 @@ class CustomTextFieldForm extends StatelessWidget {
             ),
             enabledBorder: getEnableDecorationBoder(),
             focusedBorder: getFocusDecorationBoder(),
+            errorBorder: getErrorDecorationBorder(),
+            focusedErrorBorder: getErrorDecorationBorder(),
           ),
         ),
       ],
@@ -93,5 +96,11 @@ UnderlineInputBorder getEnableDecorationBoder() {
 UnderlineInputBorder getFocusDecorationBoder() {
   return const UnderlineInputBorder(
     borderSide: BorderSide(color: AppColor.primary, width: 2),
+  );
+}
+
+UnderlineInputBorder getErrorDecorationBorder() {
+  return const UnderlineInputBorder(
+    borderSide: BorderSide(color: Colors.red, width: 2),
   );
 }
