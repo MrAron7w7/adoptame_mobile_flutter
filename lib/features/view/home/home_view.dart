@@ -23,7 +23,6 @@ class HomeView extends ConsumerStatefulWidget {
 }
 
 class _HomeViewState extends ConsumerState<HomeView> {
-  int _selectedValue = 1;
   String _profileImageUrl = '';
   bool _carga = true;
 
@@ -376,7 +375,9 @@ class _HomeViewState extends ConsumerState<HomeView> {
     );
   }
 
- /* SegmentedButton<int> _buildSegmentButton(BuildContext context) {
+ /*
+   int _selectedValue = 1;
+ SegmentedButton<int> _buildSegmentButton(BuildContext context) {
     return SegmentedButton(
       showSelectedIcon: false,
       style: SegmentedButton.styleFrom(
