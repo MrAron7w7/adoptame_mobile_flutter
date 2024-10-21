@@ -19,12 +19,11 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
-
-  bool _isSignig = false;
   final FirebaseAuthServices _auth = FirebaseAuthServices();
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isSignig = false;
+  bool _isPasswordVisible = false;
 
 //limpiar recursos cuando no se ocupe
   @override
@@ -86,8 +85,7 @@ class _LoginViewState extends State<LoginView> {
                                   return 'Por favor, ingresa un correo electrónico válido';
                                 }
                                 return null;
-                              }
-                              ),
+                              }),
 
                           const SizedBox(height: 40),
 
@@ -97,8 +95,17 @@ class _LoginViewState extends State<LoginView> {
                             keyboardType: TextInputType.visiblePassword,
                             hintText: '********',
                             label: 'Contraseña',
-                            suffixIcon: Icon(IconlyBold.show),
-                            obscureText: true,
+                            suffixIcon: IconButton(
+                              icon: Icon(_isPasswordVisible
+                                  ? IconlyBold.hide
+                                  : IconlyBold.show),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            ),
+                            obscureText: !_isPasswordVisible,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Por favor, ingresa tu contraseña';
@@ -179,7 +186,7 @@ class _LoginViewState extends State<LoginView> {
     if (user != null) {
       print("User is successfully signed in");
       context.go(
-          '/${BottomNavbar.name}'); // O simplemente '/login' si la ruta está definida así
+          '/${BottomNavbar.name}');
     } else {
       print("Some error occurred");
     }

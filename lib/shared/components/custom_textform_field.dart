@@ -39,9 +39,12 @@ class CustomTextFieldForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     var styleText = GoogleFonts.poppins(
-      fontSize: 15,
-      color: Colors.black,
+      fontSize: 14,
+      color: isDarkMode ? Colors.white70 : Colors.black,
       fontWeight: FontWeight.w500,
     );
     return Column(
