@@ -3,7 +3,10 @@ import 'dart:math';
 import 'package:adoptme/core/constants/app_assets.dart';
 import 'package:adoptme/features/view/views.dart';
 import 'package:adoptme/shared/components/components.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconly/iconly.dart';
 
 import '../../../../core/utils/utils.dart';
@@ -19,6 +22,41 @@ class NavigatorWebView extends StatefulWidget {
 
 class _NavigatorWebViewState extends State<NavigatorWebView> {
   int _selectedIndex = 0;
+  String profileImageUrl = 'https://firebasestorage.googleapis.com/v0/b/adoptame-db.appspot.com/o/Default%2FdefaultProfile.jpg?alt=media&token=404d673e-627f-4c6d-bc5f-be02f4005985';
+  String userName = '';
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserProfile();
+  }
+
+  Future<void> loadUserProfile() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (userDoc.exists) {
+          setState(() {
+            profileImageUrl = userDoc['profileImageUrl'] ??
+                'https://firebasestorage.googleapis.com/v0/b/adoptame-db.appspot.com/o/Default%2FdefaultProfile.jpg?alt=media&token=404d673e-627f-4c6d-bc5f-be02f4005985';
+            userName = userDoc['name'] ?? 'Usuario';
+            isLoading = false;
+          });
+        }
+      } catch (e) {
+        print("Error loading user profile: $e");
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +155,10 @@ class _NavigatorWebViewState extends State<NavigatorWebView> {
                                 icon: IconlyBold.logout,
                                 text: 'Salir',
                               ),
-                              onTap: () {},
+                              onTap: () {
+                                FirebaseAuth.instance.signOut();
+                                context.go('/${LoginView.name}');
+                              },
                             ),
                           ];
                         },
@@ -134,12 +175,11 @@ class _NavigatorWebViewState extends State<NavigatorWebView> {
                             children: [
                               CircleAvatar(
                                 radius: currentDiagonal * .012,
-                                backgroundImage:
-                                    const AssetImage(AppAssets.perfil),
+                                backgroundImage: NetworkImage(profileImageUrl),
                               ),
-                              //gapW(currentDiagonal * .01),
+                              gapW(currentDiagonal * .01),
                               CustomLabel(
-                                text: '',
+                                text: userName,
                                 fontSize: currentDiagonal * .012,
                               ),
                             ],
@@ -164,11 +204,11 @@ class _NavigatorWebViewState extends State<NavigatorWebView> {
   }
 
   InkWell _buildBottomNavigator(
-    double currentDiagonal, {
-    required String text,
-    required void Function()? onTap,
-    Color? color,
-  }) {
+      double currentDiagonal, {
+        required String text,
+        required void Function()? onTap,
+        Color? color,
+      }) {
     return InkWell(
       onTap: onTap,
       child: Container(

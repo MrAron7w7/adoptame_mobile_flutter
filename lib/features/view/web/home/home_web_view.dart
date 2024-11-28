@@ -3,28 +3,66 @@ import 'dart:math';
 import 'package:adoptme/core/constants/app_assets.dart';
 import 'package:adoptme/features/view/views.dart';
 import 'package:adoptme/shared/components/components.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconly/iconly.dart';
 
+import '../../../../core/enum/enums.dart';
 import '../../../../core/utils/utils.dart';
+import '../../../viewmodel/providers/seleted_dropdown_provider.dart';
 
-class HomeWebView extends StatefulWidget {
+class HomeWebView extends ConsumerStatefulWidget {
   const HomeWebView({super.key});
 
   @override
-  State<HomeWebView> createState() => _HomeWebViewState();
+  ConsumerState<HomeWebView> createState() => _HomeWebViewState();
 }
 
-class _HomeWebViewState extends State<HomeWebView> {
-  String? _dropdownValue = 'all';
+class _HomeWebViewState extends ConsumerState<HomeWebView> {
+  String _profileImageUrl = '';
+  bool _carga = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (userDoc.exists) {
+          setState(() {
+            _profileImageUrl = userDoc['profileImageUrl'] ??
+                'https://firebasestorage.googleapis.com/v0/b/adoptame-db.appspot.com/o/Default%2FdefaultProfile.jpg?alt=media&token=404d673e-627f-4c6d-bc5f-be02f4005985';
+            _carga = false;
+          });
+        }
+      } catch (e) {
+        print("Error: $e");
+        setState(() {
+          _carga = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final filterAnimal = ref.watch(seletedDropdownProvider);
 
-    //
     double currentDiagonal = sqrt(pow(size.width, 2) + pow(size.height, 2));
 
     return LayoutBuilder(
@@ -43,154 +81,13 @@ class _HomeWebViewState extends State<HomeWebView> {
                     gapH(currentDiagonal * .03),
 
                     // Filtro de los animales
-                    _buildFilteredAnimal(currentDiagonal, context),
+                    _buildFilteredAnimal(
+                        currentDiagonal, context, filterAnimal),
 
                     gapH(currentDiagonal * .03),
 
                     // Cuerpo de la vista de los animales
-                    GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: 10,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: size.width > 830 ? 4 : 3,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemBuilder: (context, index) {
-                        final currentIndex = index * Random().nextInt(10);
-                        return _buildCard(
-                          context,
-                          currentDiagonal: currentDiagonal,
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.surface,
-                                content: SizedBox(
-                                  width: size.width * .5,
-                                  height: size.width * .3,
-                                  child: Row(
-                                    children: [
-                                      //
-                                      Expanded(
-                                        child: Container(
-                                          width: size.width,
-                                          height: size.height,
-                                          alignment: Alignment.topLeft,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            image: const DecorationImage(
-                                              image:
-                                                  AssetImage(AppAssets.perfil),
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                          child: Container(
-                                            margin: const EdgeInsets.only(
-                                              top: 10,
-                                              left: 10,
-                                            ),
-                                            child: IconButton(
-                                              onPressed: () => context.pop(),
-                                              icon:
-                                                  const Icon(Icons.arrow_back),
-                                              style: IconButton.styleFrom(
-                                                elevation: 10,
-                                                shape: const CircleBorder(),
-                                                backgroundColor:
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .primary,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-
-                                      //
-                                      Expanded(
-                                        child: Container(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              // Titulo
-                                              const CustomLabel(
-                                                text: 'Toby',
-                                                fontSize: 26,
-                                              ),
-
-                                              gapH(size.height * .01),
-
-                                              // Fecha de publicacon
-                                              CustomLabel(
-                                                text:
-                                                    'Fecha de publicacion: Ayer',
-                                                fontSize: 16,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary,
-                                              ),
-
-                                              gapH(size.height * .01),
-
-                                              // Genero
-                                              CustomLabel(
-                                                text: 'Macho',
-                                                fontSize: 16,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary,
-                                              ),
-
-                                              gapH(size.height * .01),
-
-                                              // Descripcion
-                                              CustomLabel(
-                                                text:
-                                                    'lorem ipsum dolor sit amet consectetur adipiscing elit suscipit',
-                                                fontSize: 14,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary,
-                                              ),
-
-                                              // Botom
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    style: TextButton.styleFrom(
-                                      backgroundColor:
-                                          Theme.of(context).colorScheme.primary,
-                                      foregroundColor: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimary,
-                                    ),
-                                    onPressed: () => Navigator.pop(context),
-                                    child: const CustomLabel(
-                                      text: 'ADOPTAR',
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          image:
-                              'https://picsum.photos/id/$currentIndex/200/300',
-                        );
-                      },
-                    ),
+                    _buildAnimalGrid(size, currentDiagonal, filterAnimal),
                   ],
                 ),
               ),
@@ -203,8 +100,180 @@ class _HomeWebViewState extends State<HomeWebView> {
     );
   }
 
+  Widget _buildAnimalGrid(
+      Size size, double currentDiagonal, FilterAnimal filterAnimal) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        List<QueryDocumentSnapshot> posts = snapshot.data!.docs;
+
+        if (filterAnimal == FilterAnimal.dog) {
+          posts = posts.where((post) => post['animalType'] == 'Perro').toList();
+        } else if (filterAnimal == FilterAnimal.cat) {
+          posts = posts.where((post) => post['animalType'] == 'Gato').toList();
+        }
+
+        if (posts.isEmpty) {
+          return const Center(child: Text('No hay publicaciones.'));
+        }
+
+        return GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: posts.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: size.width > 830 ? 4 : 3,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+          ),
+          itemBuilder: (context, index) {
+            final post = posts[index];
+            final imageUrl = post['imagen'];
+            final description = post['description'];
+            final gender = post['gender'];
+            final animalType = post['animalType'];
+            final userId = post['userId'];
+
+            return FutureBuilder<DocumentSnapshot>(
+              future: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(userId)
+                  .get(),
+              builder: (context, AsyncSnapshot<DocumentSnapshot> userSnapshot) {
+                if (!userSnapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                final username = userSnapshot.data!['username'];
+
+                return _buildCard(
+                  context,
+                  currentDiagonal: currentDiagonal,
+                  onTap: () => _showDialogDetails(
+                    context,
+                    size,
+                    imageUrl,
+                    description,
+                    gender,
+                    animalType,
+                    username,
+                  ),
+                  image: imageUrl,
+                  gender: '$animalType - $gender',
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showDialogDetails(
+    BuildContext context,
+    Size size,
+    String imageUrl,
+    String description,
+    String gender,
+    String animalType,
+    String username,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        content: SizedBox(
+          width: size.width * .5,
+          height: size.width * .3,
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  width: size.width,
+                  height: size.height,
+                  alignment: Alignment.topLeft,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    image: DecorationImage(
+                      image: NetworkImage(imageUrl),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 10, left: 10),
+                    child: IconButton(
+                      onPressed: () => context.pop(),
+                      icon: const Icon(Icons.arrow_back),
+                      style: IconButton.styleFrom(
+                        elevation: 10,
+                        shape: const CircleBorder(),
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomLabel(
+                        text: username,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                      gapH(size.height * .01),
+                      CustomLabel(
+                        text: 'Tipo: $animalType',
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                      gapH(size.height * .01),
+                      CustomLabel(
+                        text: gender,
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                      gapH(size.height * .01),
+                      CustomLabel(
+                        text: description,
+                        fontSize: 12,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            ),
+            onPressed: () => Navigator.pop(context),
+            child: const CustomLabel(
+              text: 'ADOPTAR',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   // Filtro de los animales
-  Row _buildFilteredAnimal(double currentDiagonal, BuildContext context) {
+  Row _buildFilteredAnimal(
+      double currentDiagonal, BuildContext context, FilterAnimal filterAnimal) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -214,7 +283,6 @@ class _HomeWebViewState extends State<HomeWebView> {
         ),
         gapW(currentDiagonal * .01),
         Container(
-          //padding: const EdgeInsets.symmetric(horizontal: 5),
           decoration: BoxDecoration(
             border: Border.all(
               width: .5,
@@ -222,20 +290,20 @@ class _HomeWebViewState extends State<HomeWebView> {
             ),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: DropdownButton(
-            value: _dropdownValue,
+          child: DropdownButton<FilterAnimal>(
+            value: filterAnimal,
             padding: const EdgeInsets.symmetric(horizontal: 5),
             dropdownColor: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(12),
             underline: Container(),
-            onChanged: (String? newValue) {
-              setState(() {
-                _dropdownValue = newValue;
-              });
+            onChanged: (FilterAnimal? newValue) {
+              ref
+                  .read(seletedDropdownProvider.notifier)
+                  .selecterFilter(newValue!);
             },
-            items: const <DropdownMenuItem<String>>[
-              DropdownMenuItem<String>(
-                value: 'all',
+            items: const <DropdownMenuItem<FilterAnimal>>[
+              DropdownMenuItem<FilterAnimal>(
+                value: FilterAnimal.all,
                 child: Row(
                   children: [
                     CircleAvatar(
@@ -247,8 +315,8 @@ class _HomeWebViewState extends State<HomeWebView> {
                   ],
                 ),
               ),
-              DropdownMenuItem<String>(
-                value: 'dog',
+              DropdownMenuItem<FilterAnimal>(
+                value: FilterAnimal.dog,
                 child: Row(
                   children: [
                     CircleAvatar(
@@ -260,8 +328,8 @@ class _HomeWebViewState extends State<HomeWebView> {
                   ],
                 ),
               ),
-              DropdownMenuItem<String>(
-                value: 'cat',
+              DropdownMenuItem<FilterAnimal>(
+                value: FilterAnimal.cat,
                 child: Row(
                   children: [
                     CircleAvatar(
@@ -353,6 +421,7 @@ class _HomeWebViewState extends State<HomeWebView> {
     required double currentDiagonal,
     required String image,
     required void Function()? onTap,
+    required String gender,
   }) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -389,14 +458,18 @@ class _HomeWebViewState extends State<HomeWebView> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomLabel(
-                        text: 'Macho',
+                        text: gender,
                         fontWeight: FontWeight.w500,
                         fontSize: currentDiagonal * .015,
                       ),
                       CircleAvatar(
                         radius: currentDiagonal * .015,
-                        child: Icon(FontAwesomeIcons.mars,
-                            size: currentDiagonal * .015),
+                        child: Icon(
+                          gender == 'Macho'
+                              ? FontAwesomeIcons.mars
+                              : FontAwesomeIcons.venus,
+                          size: currentDiagonal * .015,
+                        ),
                       ),
                     ],
                   ),
